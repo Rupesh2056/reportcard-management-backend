@@ -1,0 +1,11 @@
+
+.env
+
+#database
+*.sqlite3
+
+#environments 
+venv/
+
+#extras
+*.pyc
