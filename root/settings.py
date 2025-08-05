@@ -11,16 +11,25 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+CSRF_TRUSTED_ORIGINS = []
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-g7^3fnlm=18(g@03^_y!walziqib9p4r6m$c+a)g6((tqgtk2i'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -30,7 +39,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +47,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+CUSTOM_APPS = [
+    'course',
+    'report',
+    'student',
+]
+
+THIRDPARTY_APPS = [
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'debug_toolbar'
+]
+
+INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS + THIRDPARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,6 +70,22 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     "debug_toolbar.middleware.DebugToolbarMiddleware",
+]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+     
+    ),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 20,
+    # "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+}
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
 ]
 
 ROOT_URLCONF = 'root.urls'
@@ -120,3 +159,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+from datetime import timedelta
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+
+}
