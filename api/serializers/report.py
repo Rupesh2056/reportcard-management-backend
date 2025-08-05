@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from api.serializers.course import SubjectSerializer
+from api.serializers.student import StudentSerializer
 from report.models import Mark, ReportCard, Term
 
 class TermSerializer(serializers.ModelSerializer):
@@ -9,6 +10,7 @@ class TermSerializer(serializers.ModelSerializer):
 
 
 class ReportCardSerializer(serializers.ModelSerializer):
+    student = StudentSerializer()
     class Meta:
         model = ReportCard
         fields = ("id","student","term","year")
@@ -16,6 +18,8 @@ class ReportCardSerializer(serializers.ModelSerializer):
 
 class ReportCardDetailSerializer(serializers.ModelSerializer):
     marks = serializers.SerializerMethodField()
+    student = StudentSerializer()
+
     class Meta:
         model = ReportCard
         fields = ("id","student","term","year","marks")

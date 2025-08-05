@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Avg,Prefetch
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
 
 class TermModelViewSet(ModelViewSet):
     '''
@@ -20,7 +21,14 @@ class TermModelViewSet(ModelViewSet):
     ]
     serializer_class = TermSerializer
     queryset = Term.objects.all()
-    pagination_class = None
+    model = Term
+
+    def get_queryset(self):
+        search = self.request.query_params.get("search")
+        query = Q()
+        if search:
+            query &= Q(title__icontains=search)
+        return self.model.objects.filter(query)
 
 
 
@@ -35,12 +43,35 @@ class ReportCardViewSet(ModelViewSet):
     ]
     serializer_class = ReportCardSerializer
     queryset = ReportCard.objects.all()
-    pagination_class = None
+    model = ReportCard
 
     def get_serializer_class(self, *args, **kwargs):
         if self.action in ["list","retrieve"]:
             return ReportCardDetailSerializer
         return self.serializer_class
+    
+    def get_queryset(self):
+        term = self.request.query_params.get("term")
+        year = self.request.query_params.get("year")
+        search = self.request.query_params.get("search")
+
+        query = Q()
+
+        try:
+            if term:
+                query &= Q(term_id = int(term))
+
+            if year:
+                query &= Q(year=int(year))
+        except:
+            pass
+        if search:
+            query &= Q(Q(student__name__icontains=search)
+                       | Q(student__email__icontains=search)
+                       )
+
+
+        return self.model.objects.filter(query)
 
 
 
@@ -67,16 +98,26 @@ class StudentReportCardAPIView(APIView):
 
         student_id = self.request.query_params.get("student_id")
         year = self.request.query_params.get("year")
+        term = self.request.query_params.get("term")
+
+       
         
         if student_id and year:
             try:
                 student_id = int(student_id)
                 year = int(year)
+                term = int(term) if term else None
             except:
                 return Response(data={"message":"Invalid format of year or student_id"})
             
+            query = Q(year=year,student_id=student_id)
+
+            if term:
+                query &= Q(term_id=term)
+
+            
             report_cards = ReportCard.objects.filter(
-                            student_id=student_id,year=year
+                           query
                             ).prefetch_related(
                                 Prefetch('marks', queryset=Mark.objects.select_related('subject'))
                                 )
@@ -89,7 +130,7 @@ class StudentReportCardAPIView(APIView):
                                         )
 
             overall_average_score = ReportCard.objects.filter(
-                            student_id=student_id,year=year
+                           query
                             ).aggregate(
                                                         overall_score=Avg("marks__score")
                                                         )["overall_score"]

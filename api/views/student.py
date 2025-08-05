@@ -2,6 +2,9 @@ from rest_framework.viewsets import ModelViewSet
 
 from api.serializers.student import StudentSerializer
 from student.models import Student
+from django.db.models import Q
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 class StudentModelViewSet(ModelViewSet):
     '''
@@ -18,3 +21,14 @@ class StudentModelViewSet(ModelViewSet):
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
     pagination_class = None
+ 
+
+
+    def get_queryset(self):
+        search = self.request.query_params.get("search")
+        query = Q()
+        if search:
+            query &= Q(Q(name__icontains=search)
+                       | Q(email__icontains=search)
+                       )
+        return Student.objects.filter(query)
