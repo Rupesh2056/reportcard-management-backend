@@ -83,11 +83,10 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
 }
-INTERNAL_IPS = [
-    # ...
-    "127.0.0.1",
-    # ...
-]
+# Detect Docker internal IP
+import socket
+hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+INTERNAL_IPS = ['127.0.0.1'] + [ip[: ip.rfind('.')] + '.1' for ip in ips]
 
 ROOT_URLCONF = 'root.urls'
 

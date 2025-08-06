@@ -100,7 +100,7 @@ class StudentReportCardAPIView(APIView):
     Api to view report card of a student for a year ,along with aggregated summary.
     Takes in student_id and year as query params.
     '''
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     def get(self,request,*args,**kwargs):
         data = {}
         student_id = self.request.query_params.get("student_id")
@@ -131,11 +131,17 @@ class StudentReportCardAPIView(APIView):
                                                             function='ROUND',
                                                             output_field=FloatField()
                                                         ))
-            overall_average_score = ReportCard.objects.filter(
-                                                            query
-                                                             ).aggregate(
-                                                            overall_score=Avg("marks__score")
-                                                            )["overall_score"]
+            
+            # old aggregation with marks
+            # overall_average_score = ReportCard.objects.filter(
+            #                                                 query
+            #                                                  ).aggregate(
+            #                                                 overall_score=Avg("marks__score")
+            #                                                 )["overall_score"]
+
+            #  new aggregation with average_score field
+            overall_average_score = ReportCard.objects.filter(query).aggregate(
+                                                            overall_score=Avg("average_score"))["overall_score"]
 
             data["student"] = StudentSerializer(Student.objects.get(id=student_id)).data
             data["reports"] = StudentReportCardSerializer(report_cards,many=True).data
