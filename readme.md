@@ -19,3 +19,7 @@
 
 6) Run the server
     python manage.py runserver 0.0.0.0:8000
+
+7) For API docs go to:
+    http://127.0.0.1:8000/api/swagger/
+    http://127.0.0.1:8000/api/docs/

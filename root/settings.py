@@ -57,7 +57,8 @@ CUSTOM_APPS = [
 THIRDPARTY_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
-    'debug_toolbar'
+    'debug_toolbar',
+    'drf_yasg',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS + THIRDPARTY_APPS
