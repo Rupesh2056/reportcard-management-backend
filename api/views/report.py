@@ -91,7 +91,6 @@ class MarkViewSet(CreateModelMixin, UpdateModelMixin,GenericViewSet):
     def get_serializer_class(self):
         if self.action == "create":
             return self.serializer_class
-        print("yooo")
         return MarkUpdateSerializer
 
 

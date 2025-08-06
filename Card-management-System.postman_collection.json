@@ -1,0 +1,363 @@
+{
+	"info": {
+		"_postman_id": "dac39afc-69ca-4eca-a007-e3861970927a",
+		"name": "Card-management-System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47280588"
+	},
+	"item": [
+		{
+			"name": "User Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/user/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Student",
+			"item": [
+				{
+					"name": "Student CRUD",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Test Student",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "test@student.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/student/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"student",
+								""
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Course",
+			"item": [
+				{
+					"name": "Subject Viewset",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Numerical Method",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "code",
+									"value": "NM-1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/subject/?limit=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subject",
+								""
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "gp",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Report",
+			"item": [
+				{
+					"name": "Term Viewset",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Test Term",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/terms/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"terms",
+								""
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "test",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Report Card Viewset",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "student",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "term",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "year",
+									"value": "2025",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/report-cards/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"report-cards",
+								""
+							],
+							"query": [
+								{
+									"key": "term",
+									"value": "test",
+									"disabled": true
+								},
+								{
+									"key": "year",
+									"value": "2025",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "student",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Marks Create Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "report_card",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "subject",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "score",
+									"value": "87",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/marks/80003/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"marks",
+								"80003",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Student Detailed Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/student-report-card/?student_id=1&year=2025",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"student-report-card",
+								""
+							],
+							"query": [
+								{
+									"key": "student_id",
+									"value": "1"
+								},
+								{
+									"key": "year",
+									"value": "2025"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MDYyOTQyLCJpYXQiOjE3NTQ0NzA5NDIsImp0aSI6ImY5MWFiYzJhODUzNDQxOTViMzFjMjhmMGIyMTk0ZjZkIiwidXNlcl9pZCI6IjEifQ.Krz5TL6XcSWduczMVBz-4_YaRcALMCKHVgCOKaUOXPk",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "127.0.0.1:8000/api",
+			"type": "string"
+		}
+	]
+}
