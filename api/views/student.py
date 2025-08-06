@@ -10,7 +10,7 @@ class StudentModelViewSet(ModelViewSet):
     '''
     CRUD for Student
     '''
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     http_method_names = [
         "get",
         "post",
@@ -20,7 +20,6 @@ class StudentModelViewSet(ModelViewSet):
     ]
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
-    pagination_class = None
     permission_classes = [IsAuthenticated]
  
 

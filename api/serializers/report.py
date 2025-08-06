@@ -2,6 +2,7 @@ from rest_framework import serializers
 from api.serializers.course import SubjectSerializer
 from api.serializers.student import StudentSerializer
 from report.models import Mark, ReportCard, Term
+from django.db.models import Avg
 
 class TermSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,6 +11,9 @@ class TermSerializer(serializers.ModelSerializer):
 
 
 class ReportCardSerializer(serializers.ModelSerializer):
+    '''
+    Used in Report Card Viewset.
+    '''
     class Meta:
         model = ReportCard
         fields = ("id","student","term","year")
@@ -23,8 +27,10 @@ class ReportCardSerializer(serializers.ModelSerializer):
 
 
 class StudentReportCardSerializer(serializers.ModelSerializer):
+    '''
+    Used in Student Report Card API (Yearly). (Student removed to reduce redundancy)
+    '''
     marks = serializers.SerializerMethodField()
-    # student = StudentSerializer()
 
     class Meta:
         model = ReportCard
@@ -40,13 +46,19 @@ class StudentReportCardSerializer(serializers.ModelSerializer):
         return repr
     
 
-
 class ReportCardDetailSerializer(StudentReportCardSerializer):
+    '''
+    Used in ReportCard Viewset's Detail View. (Student Added)
+    '''
     student = StudentSerializer()
+    average_score = serializers.SerializerMethodField()
 
     class Meta:
         model = ReportCard
-        fields = ("id",'student',"term","year","marks")
+        fields = ("id",'student',"term","year","marks","average_score")
+    
+    def get_average_score(self,obj):
+        return obj.marks.aggregate(Avg("score"))["score__avg"]
 
 
 
@@ -62,3 +74,9 @@ class ReportMarkListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Mark
         fields = ("id","subject","score")
+
+
+class MarkUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mark
+        fields = ("score",)
