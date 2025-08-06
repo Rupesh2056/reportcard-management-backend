@@ -15,6 +15,8 @@ Option1: With docker
         docker compose up
 
 Option2: Without Docker
+    pre-requisite : Redis running on localhost.
+
     1) Clone the repo 
         git clone git@github.com:Rupesh2056/reportcard-management-backend.git
 
@@ -30,13 +32,16 @@ Option2: Without Docker
 
     5) Create .env
         a) cp .env.sample .env
-        b) make necessary changes on the .env file for database (leave unchanged for sqlite3)
+        b) make necessary changes on the .env file for database (leave unchanged for sqlite3) and redis host.
 
     6) Migrate database:
         python manage.py migrate
 
     7) Run the server
         python manage.py runserver 0.0.0.0:8000
+
+    8) Run celery on other tab: 
+        celery -A root worker -l INFO
 
 
 
@@ -65,6 +70,7 @@ For Dummy data, use the management command:
     i) Postman Collection for APIs.
     j) API docs (swagger).
     k) Docker setup.
+    l) Celery task to calculate average_score in background.
 
 
 
@@ -81,6 +87,9 @@ For Dummy data, use the management command:
         ReportCard.
 
 4) Query Optimization:
+    - average_score field ia added on ReportCard Table itself and is updated by aggregating score as soon as new marks
+        are added or updated. This is very handy for a long run as the marks objects grows over time and we dont have to aggregate filtering from millions of rows, but rather just get it as a field within the ReportCard Table.
+
     - For StudentReportCardAPIView, I used a minimal Serializer excluding Student from each Report. This is because, we are 
       looking for reports of a particular student. So, it not worth mentioning the student for every reports. Rather, i have 
       used a single key "student" for the overall response.
