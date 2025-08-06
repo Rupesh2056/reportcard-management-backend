@@ -10,23 +10,45 @@ class TermSerializer(serializers.ModelSerializer):
 
 
 class ReportCardSerializer(serializers.ModelSerializer):
-    student = StudentSerializer()
     class Meta:
         model = ReportCard
         fields = ("id","student","term","year")
 
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr["student"] = StudentSerializer(instance.student).data
+        repr["term"] = instance.term.title
+        return repr
 
-class ReportCardDetailSerializer(serializers.ModelSerializer):
+
+
+class StudentReportCardSerializer(serializers.ModelSerializer):
     marks = serializers.SerializerMethodField()
-    student = StudentSerializer()
+    # student = StudentSerializer()
 
     class Meta:
         model = ReportCard
-        fields = ("id","student","term","year","marks")
+        fields = ("id","term","year","marks")
 
     def get_marks(self,obj):
         marks = ReportMarkListSerializer(obj.marks.all(),many=True).data
         return marks
+    
+    def to_representation(self, instance):
+        repr =  super().to_representation(instance)
+        repr["term"] = instance.term.title
+        return repr
+    
+
+
+class ReportCardDetailSerializer(StudentReportCardSerializer):
+    student = StudentSerializer()
+
+    class Meta:
+        model = ReportCard
+        fields = ("id",'student',"term","year","marks")
+
+
 
 
 class MarkSerializer(serializers.ModelSerializer):

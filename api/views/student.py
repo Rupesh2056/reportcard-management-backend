@@ -3,7 +3,7 @@ from rest_framework.viewsets import ModelViewSet
 from api.serializers.student import StudentSerializer
 from student.models import Student
 from django.db.models import Q
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
 
 
 class StudentModelViewSet(ModelViewSet):
@@ -21,6 +21,7 @@ class StudentModelViewSet(ModelViewSet):
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
     pagination_class = None
+    permission_classes = [IsAuthenticated]
  
 
 

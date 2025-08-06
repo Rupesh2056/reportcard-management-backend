@@ -1,12 +1,15 @@
 from rest_framework.viewsets import ModelViewSet
 
-from api.serializers.report import MarkSerializer, ReportCardDetailSerializer, ReportCardSerializer, TermSerializer
+from api.serializers.report import MarkSerializer, ReportCardDetailSerializer, ReportCardSerializer, StudentReportCardSerializer, TermSerializer
+from api.serializers.student import StudentSerializer
 from report.models import Mark, ReportCard, Term
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Avg,Prefetch
 from rest_framework.permissions import IsAuthenticated
-from django.db.models import Q
+from django.db.models import Q,Func,FloatField,Value
+
+from student.models import Student
 
 class TermModelViewSet(ModelViewSet):
     '''
@@ -46,7 +49,7 @@ class ReportCardViewSet(ModelViewSet):
     model = ReportCard
 
     def get_serializer_class(self, *args, **kwargs):
-        if self.action in ["list","retrieve"]:
+        if self.action in ["retrieve"]:
             return ReportCardDetailSerializer
         return self.serializer_class
     
@@ -92,52 +95,52 @@ class MarkViewSet(ModelViewSet):
 
 
 class StudentReportCardAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     def get(self,request,*args,**kwargs):
         data = {}
-
         student_id = self.request.query_params.get("student_id")
         year = self.request.query_params.get("year")
-        term = self.request.query_params.get("term")
-
-       
         
         if student_id and year:
             try:
                 student_id = int(student_id)
                 year = int(year)
-                term = int(term) if term else None
             except:
                 return Response(data={"message":"Invalid format of year or student_id"})
             
             query = Q(year=year,student_id=student_id)
 
-            if term:
-                query &= Q(term_id=term)
 
-            
+            # for report list along with subject marks
             report_cards = ReportCard.objects.filter(
                            query
-                            ).prefetch_related(
+                            ).select_related("term").prefetch_related(
                                 Prefetch('marks', queryset=Mark.objects.select_related('subject'))
                                 )
-            marks = Mark.objects.filter(                 
+            
+            # for aggregation (average score per subject)
+            subject_wise_average = Mark.objects.filter(                 
                                     report_card__student_id=student_id,
                                     report_card__year=year
                                     ).values(
-                                        "subject__name").annotate(
-                                            avergae_score = Avg("score")
-                                        )
+                                        "subject__name").annotate(average_score=Func(
+                                                            Avg("score"),
+                                                            Value(2),
+                                                            function='ROUND',
+                                                            output_field=FloatField()
+                                                        ))
 
             overall_average_score = ReportCard.objects.filter(
-                           query
-                            ).aggregate(
-                                                        overall_score=Avg("marks__score")
-                                                        )["overall_score"]
-            
+                                                            query
+                                                             ).aggregate(
+                                                            overall_score=Avg("marks__score")
+                                                            )["overall_score"]
 
-            data["reports"] = ReportCardDetailSerializer(report_cards,many=True).data
-            data["overall_average_score"] = overall_average_score
-            data["average_per_subject"] = list(marks)
+
+            
+            data["student"] = StudentSerializer(Student.objects.get(id=student_id)).data
+            data["reports"] = StudentReportCardSerializer(report_cards,many=True).data
+            data["average_per_subject"] = list(subject_wise_average)
+            data["overall_average_score"] = round(overall_average_score,2)
             return Response(data=data)
         return Response(data={"message":"Please Provide Year and student_id"},status=400)

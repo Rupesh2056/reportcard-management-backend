@@ -18,7 +18,10 @@ class ReportCard(TimeStampModel):
     #                             validators=[validate_score])
 
     class Meta:
-        unique_together = ('student','term','year')
+        unique_together = ('student','term','year')        
+        indexes = [
+                    models.Index(fields=['student', 'year']),
+                ]
 
 
 class Mark(TimeStampModel):
