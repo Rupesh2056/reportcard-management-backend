@@ -5,7 +5,7 @@ from course.models import Subject
 from report.models import Term,ReportCard,Mark
 import random
 import decimal
-
+from root.celery import sync_report_average_score_task
 
 def create_students():
     students = []
@@ -74,6 +74,12 @@ class Command(BaseCommand):
         subjects = create_subjects()
         reports = create_report_cards(students)
         create_marks(students,subjects,reports)
+
+        report_ids = [report.id for report in reports]
+
+        # sync the average_score for all reports
+        sync_report_average_score_task.delay(report_ids)
+
 
 
 

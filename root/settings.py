@@ -59,6 +59,7 @@ THIRDPARTY_APPS = [
     'rest_framework_simplejwt',
     'debug_toolbar',
     'drf_yasg',
+    'django_celery_results',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS + THIRDPARTY_APPS
@@ -188,3 +189,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
 
 }
+
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
+CELERY_TIMEZONE = TIME_ZONE

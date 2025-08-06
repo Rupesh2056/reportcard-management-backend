@@ -33,6 +33,27 @@ services:
     command: sh entrypoint.sh
     networks:
       - root_network
+
+  redis:
+    image:  redis:7.2.4
+    container_name: "redis"
+    ports:
+      - "6379:6379"
+
+    networks:
+      - root_network
+  
+  celery:
+    build: .
+    depends_on:
+      - redis
+    container_name: celery
+    command: sh -c "celery -A root worker -l INFO"
+    volumes:
+      - ./:/code
+    
+    networks:
+      - root_network
    
 
 networks:

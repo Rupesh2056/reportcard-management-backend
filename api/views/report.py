@@ -9,7 +9,7 @@ from django.db.models import Avg,Prefetch
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q,Func,FloatField,Value
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.mixins import CreateModelMixin, UpdateModelMixin,RetrieveModelMixin
+from rest_framework.mixins import CreateModelMixin, UpdateModelMixin,RetrieveModelMixin,ListModelMixin
 from student.models import Student
 
 class TermModelViewSet(ModelViewSet):
@@ -36,11 +36,11 @@ class TermModelViewSet(ModelViewSet):
 
 
 
-class ReportCardViewSet(CreateModelMixin, RetrieveModelMixin,GenericViewSet):
+class ReportCardViewSet(ListModelMixin,CreateModelMixin, RetrieveModelMixin,GenericViewSet):
     '''
     CRU  for ReportCard
     '''
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = ReportCardSerializer
     queryset = ReportCard.objects.all()
     model = ReportCard

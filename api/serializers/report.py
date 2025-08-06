@@ -51,14 +51,17 @@ class ReportCardDetailSerializer(StudentReportCardSerializer):
     Used in ReportCard Viewset's Detail View. (Student Added)
     '''
     student = StudentSerializer()
-    average_score = serializers.SerializerMethodField()
+    # average_score_calc = serializers.SerializerMethodField()
 
     class Meta:
         model = ReportCard
         fields = ("id",'student',"term","year","marks","average_score")
+
+        # fields = ("id",'student',"term","year","marks","average_score","average_score_calc")  # remove it
     
-    def get_average_score(self,obj):
-        return obj.marks.aggregate(Avg("score"))["score__avg"]
+    # get_average_score_calc was to test  (remove it)
+    # def get_average_score_calc(self,obj):
+    #     return obj.marks.aggregate(Avg("score"))["score__avg"]
 
 
 

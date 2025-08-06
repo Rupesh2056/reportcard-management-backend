@@ -18,3 +18,6 @@ postgres_data/
 
 #backups
 *.bak
+
+# temp app
+stats/

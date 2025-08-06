@@ -14,8 +14,8 @@ class ReportCard(TimeStampModel):
     student = models.ForeignKey(Student,on_delete=models.CASCADE,related_name="report_cards")
     term = models.ForeignKey(Term,on_delete=models.PROTECT,related_name="report_cards")
     year = models.PositiveIntegerField(validators=[validate_year])
-    # average_score =  models.DecimalField(max_digits=5,decimal_places=2,default=decimal.Decimal(0.0),
-    #                             validators=[validate_score])
+    average_score =  models.DecimalField(max_digits=5,decimal_places=2,default=decimal.Decimal(0.0),
+                                validators=[validate_score])
 
     class Meta:
         unique_together = ('student','term','year')        
