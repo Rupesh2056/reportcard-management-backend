@@ -12,11 +12,10 @@ from .report import urlpatterns as report_url_patterns
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="LVD API",
+        title="API Docs for Report Card",
         default_version="v1",
         description="API Swagger",
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="info@bidhee.net"),
+        contact=openapi.Contact(email="chaulagainrupesh@gmail.com"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,

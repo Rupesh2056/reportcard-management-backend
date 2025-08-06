@@ -1,0 +1,40 @@
+services:
+  db:
+    container_name: "reportcard_database"
+    image: postgres:16.1
+    ports:
+    - 5434:5432
+    restart: unless-stopped
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_DB=reportcard_db
+    - POSTGRES_PASSWORD=postgres
+
+    networks:
+      - root_network
+    
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+
+
+  web:
+    container_name: "reportcard_server"
+    env_file: .env   
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped #always
+    depends_on:
+      - db
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    command: sh entrypoint.sh
+    networks:
+      - root_network
+   
+
+networks:
+  root_network:
+    driver: bridge

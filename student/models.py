@@ -7,4 +7,4 @@ from root.models import TimeStampModel
 class Student(TimeStampModel):
     name = models.CharField(max_length=55)
     email = models.EmailField(unique=True)
-    date_ob_birth = models.DateField(blank=True,null=True)
+    date_of_birth = models.DateField(blank=True,null=True)

@@ -141,6 +141,6 @@ class StudentReportCardAPIView(APIView):
             data["student"] = StudentSerializer(Student.objects.get(id=student_id)).data
             data["reports"] = StudentReportCardSerializer(report_cards,many=True).data
             data["average_per_subject"] = list(subject_wise_average)
-            data["overall_average_score"] = round(overall_average_score,2)
+            data["overall_average_score"] = round(overall_average_score,2) if overall_average_score else 0
             return Response(data=data)
         return Response(data={"message":"Please Provide Year and student_id"},status=400)

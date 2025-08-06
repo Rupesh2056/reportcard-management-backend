@@ -4,8 +4,17 @@
 #database
 *.sqlite3
 
+#static
+staticfiles/
+
 #environments 
 venv/
 
 #extras
 *.pyc
+
+#postgres data
+postgres_data/
+
+#backups
+*.bak
